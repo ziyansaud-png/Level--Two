@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -12,45 +12,66 @@
             padding: 0;
             background: transparent;
         }
+
+        /* Make page use full height and push footer to bottom */
+        .page-wrap{
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         header {
             background: linear-gradient(135deg, #ff0033, #ff7a00, #ffd500);
             color: #ffffff;
-            padding: 10px 30px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             direction: rtl;
+            flex-wrap: wrap;              /* helps on mobile */
+            text-align: center;           /* helps when wrapped */
         }
         header img {
             height: 60px;
+            width: auto;
             background: #ffffff;
             border-radius: 5px;
+            object-fit: contain;
         }
+
         nav {
             background: linear-gradient(to right, #1e3c72, #2a5298);
-            padding: 10px 30px;
+            padding: 10px 20px;
+            text-align: center;
         }
         nav a {
             color: #ffffff;
             text-decoration: none;
-            margin-right: 20px;
+            margin: 6px 12px;
+            display: inline-block;
         }
+
+        /* Main should grow to fill remaining page height */
         main {
+            flex: 1;
             display: flex;
             justify-content: center;
+            align-items: center;          /* vertically centers the card */
             padding: 20px;
         }
+
         .info {
             background: rgba(255,255,255,0.88);
             margin: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             box-shadow: 0 0 15px rgba(0,0,0,0.25);
-            padding: 20px;
-            width: 300px;
+            padding: 22px;
+            width: min(720px, 92vw);      /* responsive width */
             text-align: center;
             color: #1e2a4a;
         }
+
         footer {
             background: linear-gradient(to right, #2a5298, #1e3c72);
             color: #ffffff;
@@ -61,8 +82,6 @@
 </head>
 
 <body style="position:relative;">
-
-<!-- FULL PAGE WATERMARK BACKGROUND -->
 
 <!-- DARK WATERMARK BACKGROUND -->
 <div style="
@@ -85,7 +104,7 @@
 "></div>
 
 <!-- PAGE CONTENT -->
-<div style="position: relative; z-index: 1;">
+<div style="position: relative; z-index: 1;" class="page-wrap">
 
 <header>
     <img src="logo.png" alt="Level Two Company Logo" />
