@@ -8,20 +8,30 @@
     <style>
         body {
             font-family: Arial bold, sans-serif;
-            background: #f4f7ff;
-            margin: 0; 
-	    padding: 0;
+            margin: 0;
+            padding: 0;
+            background: transparent;
         }
+
+        /* Full-page layout */
+        .page-wrap {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
         header {
             background: linear-gradient(135deg, #ff0033, #ff7a00, #ffd500);
             color: #ffffff;
-            padding: 10px 30px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             gap: 20px;
-            direction: rtl;
+            flex-wrap: wrap;
+            text-align: left;
         }
+
         .lang-switch a {
             color: white;
             text-decoration: none;
@@ -30,31 +40,64 @@
             padding: 5px 10px;
             border-radius: 5px;
         }
+
         main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
             text-align: center;
         }
+
         section {
-            background: white;
-            padding: 15px;
-            margin: 15px auto;
-            max-width: 400px;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.88);
+            padding: 20px;
+            margin: 12px auto;
+            width: min(720px, 92vw);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.25);
+            color: #1e2a4a;
         }
+
         footer {
-            background: #2a5298;
+            background: linear-gradient(to right, #2a5298, #1e3c72);
             color: white;
             text-align: center;
-            padding: 10px;
+            padding: 15px;
         }
     </style>
 </head>
 
-<body>
+<body style="position:relative;">
+
+<!-- DARK WATERMARK BACKGROUND -->
+<div style="
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(
+            rgba(0,0,0,0.45),
+            rgba(0,0,0,0.45)
+        ),
+        url('images/shop-interior.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:0;
+    pointer-events:none;
+"></div>
+
+<!-- PAGE CONTENT -->
+<div style="position:relative; z-index:1;" class="page-wrap">
 
 <header>
     <div>
-        <strong>Level Two Company</strong><br>
+        <strong style="font-size:1.4em;">Level Two Company</strong><br>
         Telecommunications & Information Technology
     </div>
 
@@ -85,6 +128,8 @@
 <footer>
     © 2024 Level Two Company – All Rights Reserved
 </footer>
+
+</div>
 
 </body>
 </html>
