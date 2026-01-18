@@ -7,19 +7,26 @@
     <style>
         body {
             font-family: Arial bold, sans-serif;
-            background: #f4f7ff;
             margin: 0;
             padding: 0;
+            background: transparent;
+        }
+        .page-wrap{
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         header {
             background: linear-gradient(135deg, #00c6ff, #0072ff, #7f00ff);
             color: #ffffff;
-            padding: 10px 30px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 16px;
             direction: rtl;
+            flex-wrap: wrap;
+            text-align: center;
         }
         header img {
             height: 60px;
@@ -28,70 +35,67 @@
             object-fit: contain;
             background: #ffffff;
         }
-        header .company-names {
-            text-align: center;
-        }
-        header .company-names .arabic-name {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        header .company-names .english-name {
-            direction: ltr;
-            font-weight: normal;
-            margin-top: 5px;
-            font-size: 0.9em;
-            color: #eaf6ff;
-        }
+        header .company-names { text-align: center; }
+        header .company-names .arabic-name { font-size: 1.5em; font-weight: bold; }
+        header .company-names .english-name { direction: ltr; font-weight: normal; margin-top: 5px; font-size: 0.9em; color: #eaf6ff; }
+
         nav {
             background: linear-gradient(to right, #141e30, #243b55);
-            padding: 10px 30px;
+            padding: 10px 20px;
+            text-align: center;
         }
         nav a {
             color: #ffffff;
             text-decoration: none;
-            margin-right: 20px;
+            margin: 6px 12px;
             font-size: 1em;
             padding: 6px 10px;
             border-radius: 6px;
             display: inline-block;
         }
+        nav a:hover { text-decoration: underline; }
         nav a.active {
             background: rgba(255, 255, 255, 0.22);
             font-weight: bold;
             border: 1px solid rgba(255, 255, 255, 0.40);
+            text-decoration: none;
         }
+
         main {
+            flex: 1;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
+
         .product {
-            background: linear-gradient(180deg, #ffffff, #eef3ff);
+            background: rgba(255,255,255,0.88);
             margin: 15px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(42,82,152,0.25);
-            padding: 15px;
-            width: 95%;
-            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.25);
+            padding: 22px;
+            width: min(980px, 92vw);
             text-align: center;
             color: #1e2a4a;
         }
 
-        /* Gallery */
+        /* HORIZONTAL SCROLL GALLERY */
         .product-gallery {
             display: flex;
             gap: 12px;
             overflow-x: auto;
             padding: 10px 0;
+            scroll-behavior: smooth;
         }
         .product-gallery img {
+            flex: 0 0 auto;
             width: 160px;
             height: 110px;
             object-fit: cover;
             border-radius: 6px;
-            cursor: pointer;
             background: #ffffff;
+            cursor: pointer;
         }
 
         footer {
@@ -99,21 +103,20 @@
             color: #ffffff;
             text-align: center;
             padding: 15px;
-            margin-top: 40px;
         }
 
-        /* Lightbox */
+        /* FULLSCREEN PREVIEW (LIGHTBOX) + ZOOM */
         .lightbox {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: rgba(0, 0, 0, 0.85);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 9999;
+            padding: 20px;
         }
         .lightbox.open { display: flex; }
-
         .lightbox img {
             max-width: 95vw;
             max-height: 85vh;
@@ -122,43 +125,70 @@
             background: #ffffff;
             transform-origin: center center;
             transition: transform 0.15s ease;
-            cursor: grab;
         }
-
-        /* Controls */
-        .controls {
+        .lightbox .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+        }
+        .lightbox .controls {
             position: absolute;
             top: 15px;
             left: 15px;
             display: flex;
             gap: 8px;
         }
-        .controls button,
-        .close-btn {
-            background: rgba(255,255,255,0.15);
+        .lightbox .controls button {
+            background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
-            border: 1px solid rgba(255,255,255,0.35);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 8px;
-            padding: 8px 10px;
+            padding: 10px 12px;
             cursor: pointer;
             font-size: 14px;
+            line-height: 1;
         }
-        .close-btn {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-        }
-        .hint {
+        .lightbox .hint {
             position: absolute;
             bottom: 14px;
             left: 50%;
             transform: translateX(-50%);
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 12px;
+            text-align: center;
         }
     </style>
 </head>
-<body>
+
+<body style="position:relative;">
+
+<!-- DARK WATERMARK BACKGROUND -->
+<div style="
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:
+        linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
+        url('images/shop-interior.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    z-index:0;
+    pointer-events:none;
+"></div>
+
+<!-- PAGE CONTENT -->
+<div style="position: relative; z-index: 1;" class="page-wrap">
 
 <header>
     <img src="logo.png" alt="Level Two Company Logo" />
@@ -176,30 +206,20 @@
 </nav>
 
 <main>
-    <section class="product">
+    <section id="products" class="product">
         <h3>منتجاتنا</h3>
         <p>Our Products</p>
 
         <div class="product-gallery">
-            <img src="images/outlet.jpg" alt="Product" />
-            <img src="images/Laptop1.jpg" alt="Product" />
-            <img src="images/3.jpg" alt="Product" />
-            <img src="images/7.jpg" alt="Product" />
-            <img src="images/111.jpg" alt="Product" />
-            <img src="images/222.jpg" alt="Product" />
-            <img src="images/333.jpg" alt="Product" />
-            <img src="images/444.jpg" alt="Product" />
-            <img src="images/555.jpg" alt="Product" /> 
-            <img src="images/Headphone.jpg" alt="Product" />
-	    <img src="images/GPU!.jpg" alt="Product" />
-	    <img src="images/Bluetooth.jpg" alt="Product" />
-	    <img src="images/Cabinet.jpg" alt="Product" />
-	    <img src="images/Laptop.jpg" alt="Product" />
-	    <img src="images/screen.jpg" alt="Product" />
-	    <img src="images/Screen1.jpg" alt="Product" />
-	    <img src="images/USB.jpg" alt="Product" />
-	    <img src="images/Curved.jpg" alt="Product" />
-
+            <img src="images/outlet.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/cameras.png" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/3.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/7.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/111.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/222.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/333.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/444.jpg" alt="منتجات الاتصالات" loading="lazy" />
+            <img src="images/555.jpg" alt="منتجات الاتصالات" loading="lazy" />
         </div>
 
         <p>نقدم جميع أنواع الأجهزة والبرامج المتعلقة بالاتصالات وتقنية المعلومات.</p>
@@ -212,23 +232,25 @@
     &copy; 2024 Level Two Company for Telecommunications and IT – All Rights Reserved
 </footer>
 
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
+</div>
+
+<!-- LIGHTBOX OVERLAY -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
     <div class="controls">
-        <button id="zoomIn">＋</button>
-        <button id="zoomOut">−</button>
-        <button id="resetZoom">Reset</button>
+        <button id="zoomIn" type="button">＋</button>
+        <button id="zoomOut" type="button">−</button>
+        <button id="resetZoom" type="button">Reset</button>
     </div>
-    <button class="close-btn" id="closeLightbox">✕</button>
+    <button class="close-btn" id="lightboxClose" type="button">Close ✕</button>
     <img id="lightboxImg" src="" alt="Preview" />
-    <div class="hint">Mouse wheel / buttons to zoom • ESC to close</div>
+    <div class="hint">Mouse wheel / buttons to zoom • Click outside or press ESC to close</div>
 </div>
 
 <script>
 (function () {
     const lightbox = document.getElementById("lightbox");
-    const img = document.getElementById("lightboxImg");
-    const closeBtn = document.getElementById("closeLightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const closeBtn = document.getElementById("lightboxClose");
     const zoomInBtn = document.getElementById("zoomIn");
     const zoomOutBtn = document.getElementById("zoomOut");
     const resetBtn = document.getElementById("resetZoom");
@@ -239,38 +261,47 @@
     const STEP = 0.2;
 
     function applyZoom() {
-        img.style.transform = `scale(${scale})`;
+        lightboxImg.style.transform = `scale(${scale})`;
     }
 
-    function openLightbox(src) {
-        img.src = src;
+    function openLightbox(src, altText) {
+        lightboxImg.src = src;
+        lightboxImg.alt = altText || "Preview";
         scale = 1;
         applyZoom();
         lightbox.classList.add("open");
+        lightbox.setAttribute("aria-hidden", "false");
     }
 
     function closeLightbox() {
         lightbox.classList.remove("open");
-        img.src = "";
+        lightbox.setAttribute("aria-hidden", "true");
+        lightboxImg.src = "";
     }
 
-    document.querySelectorAll(".product-gallery img").forEach(i => {
-        i.addEventListener("click", () => openLightbox(i.src));
+    document.querySelectorAll(".product-gallery img").forEach(img => {
+        img.addEventListener("click", () => openLightbox(img.src, img.alt));
     });
 
-    zoomInBtn.onclick = () => { scale = Math.min(MAX, scale + STEP); applyZoom(); };
-    zoomOutBtn.onclick = () => { scale = Math.max(MIN, scale - STEP); applyZoom(); };
-    resetBtn.onclick = () => { scale = 1; applyZoom(); };
+    closeBtn.addEventListener("click", closeLightbox);
 
-    closeBtn.onclick = closeLightbox;
-    lightbox.onclick = e => { if (e.target === lightbox) closeLightbox(); };
+    lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
 
-    document.addEventListener("keydown", e => {
+    document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeLightbox();
+        if (!lightbox.classList.contains("open")) return;
+        if (e.key === "+" || e.key === "=") { scale = Math.min(MAX, scale + STEP); applyZoom(); }
+        if (e.key === "-") { scale = Math.max(MIN, scale - STEP); applyZoom(); }
+        if (e.key.toLowerCase() === "r") { scale = 1; applyZoom(); }
     });
 
-    // Mouse wheel zoom
-    img.addEventListener("wheel", e => {
+    zoomInBtn.addEventListener("click", () => { scale = Math.min(MAX, scale + STEP); applyZoom(); });
+    zoomOutBtn.addEventListener("click", () => { scale = Math.max(MIN, scale - STEP); applyZoom(); });
+    resetBtn.addEventListener("click", () => { scale = 1; applyZoom(); });
+
+    lightboxImg.addEventListener("wheel", (e) => {
         e.preventDefault();
         scale += e.deltaY < 0 ? STEP : -STEP;
         scale = Math.max(MIN, Math.min(MAX, scale));
@@ -281,4 +312,3 @@
 
 </body>
 </html>
-
